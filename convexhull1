@@ -1,0 +1,51 @@
+package ada;
+import java.util.ArrayList;
+import java.util.List;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+class demo
+{
+	 private Mat srcGray = new Mat();
+	    private int threshold = 280;
+	    Point[] point;
+	    public demo(String[] args) {
+	        /// Load source image
+	        String filename = args.length > 0 ? args[0] : hull.s;
+	        Mat src = Imgcodecs.imread(filename);
+	        if (src.empty()) {
+	            System.err.println("Cannot read image: " + filename);
+	            System.exit(0);
+	        }
+
+	        /// Convert image to gray and blur it
+	        Imgproc.cvtColor(src, srcGray, Imgproc.COLOR_BGR2GRAY);
+	        Imgproc.blur(srcGray, srcGray, new Size(3, 3));
+	        Mat cannyOutput = new Mat();
+	        Imgproc.Canny(srcGray, cannyOutput, threshold, threshold * 2);
+
+	        /// Find contours
+	        List<MatOfPoint> contours = new ArrayList<>();
+	        Mat hierarchy = new Mat();
+	        Imgproc.findContours(cannyOutput, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+	        Point[] contourArray ;
+	        Point[] contourarray= new Point[0] ;
+	
+	        for (MatOfPoint contour : contours) {
+		contourArray = contour.toArray();
+		int aLen = contourArray.length;
+	            int bLen = contourarray.length;
+	            Point[] result = new Point[aLen + bLen];
+
+	            System.arraycopy(contourArray, 0, result, 0, aLen);
+	            System.arraycopy(contourarray, 0, result, aLen, bLen);
+	            contourarray=result;
+	
+	        }
+            point= contourarray;
+
+}
+}
